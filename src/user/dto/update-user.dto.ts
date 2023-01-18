@@ -5,3 +5,4 @@ export class UpdateUserDto {
   @IsOptional()
   nickNmae?: string;
 }
+
