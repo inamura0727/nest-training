@@ -18,6 +18,11 @@ export class AuthController {
   // AuthServiceを利用するためDIをする
   constructor(private readonly authService: AuthService) {}
 
+  @Get('/csrf')
+  getCsrfToken(@Req() req: Request): Csrf {
+    return { csrfToken: req.csrfToken() };
+  }
+
   // クライアントから送られてくるリクエストボディを取り出す場合は＠Bodyを使用する
   @Post('signup')
   signUp(@Body() dto: AuthDto): Promise<Msg> {
@@ -34,7 +39,7 @@ export class AuthController {
     const jwt = await this.authService.login(dto);
     res.cookie('access_token', jwt.accessToken, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
       path: '/',
     });
@@ -49,7 +54,7 @@ export class AuthController {
     // アクセストークンの値をからにすることで、cookiemをリセットしている
     res.cookie('access_token', '', {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
       path: '/',
     });
